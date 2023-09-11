@@ -32,8 +32,8 @@ class SeriesController extends Controller
         // A linha 31 executa basicamente o mesmo código feito da linha 26 à 29. (Existem algumas diferenças).
 
         Serie::create($request->all());
-
-
+        $request->session()->flash('mensagem.sucesso', 'Série adicionada com sucesso');
+        
         return to_route("series.index");
     }
 
