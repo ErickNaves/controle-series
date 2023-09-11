@@ -18,7 +18,9 @@ Route::get('/', function () {
     return redirect('/series');
 });
 
-Route::resource('/series', SeriesController::class);
+Route::resource('/series', SeriesController::class)->only(['index','create','store','destroy']);
+
+
 
 // O código na linha 21 está fazendo o direcionamento das requisições para os lugares corretos como segue o exemplo nas linhas 24 à 27.
 // Route::controller(SeriesController::class)->group(function (){
