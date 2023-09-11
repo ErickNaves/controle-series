@@ -31,18 +31,31 @@ class SeriesController extends Controller
         // $series->save();
         // A linha 31 executa basicamente o mesmo código feito da linha 26 à 29. (Existem algumas diferenças).
 
-        Serie::create($request->all());
-        $request->session()->flash('mensagem.sucesso', 'Série adicionada com sucesso');
+        $series = Serie::create($request->all());
         
-        return to_route("series.index");
+        return to_route("series.index")->with('mensagem.sucesso', "Série '{$series->nome}' adicionada com sucesso");
     }
 
-    public function destroy (Request $request)
+    public function destroy (Serie $series)
     {
-        Serie::destroy($request->series);
-        $request->session()->flash('mensagem.sucesso', 'Série removida com sucesso');
+        $series->delete();
 
-        return to_route('series.index');
+        // $request->session()->flash('mensagem.sucesso', "Série '{$series->nome}'
+
+        return to_route('series.index')->with('mensagem.sucesso', "Série '{$series->nome}' removida com sucesso");
+    }
+
+    public function edit (Serie $series)
+    {
+        return view('series.edit')->with('series',$series);
+    }
+
+    public function update (Serie $series, Request $request)
+    {
+        $series->nome = $request->nome;
+        $series->save();
+
+        return to_route('series.index')->with('mensagem.sucesso', "Série '{$series->nome}' atualizada com sucesso");
     }
 }
 
