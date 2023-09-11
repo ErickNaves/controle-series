@@ -31,6 +31,10 @@ class SeriesController extends Controller
         // $series->save();
         // A linha 31 executa basicamente o mesmo código feito da linha 26 à 29. (Existem algumas diferenças).
 
+        $request->validate([
+            'nome' => ['required', 'min:3']
+        ]);
+
         $series = Serie::create($request->all());
         
         return to_route("series.index")->with('mensagem.sucesso', "Série '{$series->nome}' adicionada com sucesso");
