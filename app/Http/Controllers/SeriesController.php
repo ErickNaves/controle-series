@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SeriesFormRequest;
-use App\Models\Serie;
 use App\Models\Series;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +11,7 @@ class SeriesController extends Controller
 {
     public function index(Request $request)
     {
-        $series = Serie::all();
+        $series = Series::all();
         // $mensagemSucesso = $request->session()->get('mensagem.sucesso');  --> O código na linha a baixo irá executar a mesma coisa de uma forma mais simples.
         $mensagemSucesso = session('mensagem.sucesso');
 
@@ -31,13 +30,23 @@ class SeriesController extends Controller
         // $series->nome = $nomeSerie;
         // $series->save();
         // A linha 31 executa basicamente o mesmo código feito da linha 26 à 29. (Existem algumas diferenças).
+        $series = Series::create($request->all());
+        for ($i = 1; $i <= $request->seasonsQty; $i++) {
+            $season = $series->seasons()->create([
+                'number' => $i,
+            ]);
 
-        $series = Serie::create($request->all());
+            for ($j = 1; $j <= $request->episodesPerSeason; $j++) {
+                $season->episodes()->create([
+                    'number' => $j
+                ]);
+            }
+        }
         
         return to_route("series.index")->with('mensagem.sucesso', "Série '{$series->nome}' adicionada com sucesso");
     }
 
-    public function destroy (Serie $series)
+    public function destroy (Series $series)
     {
         $series->delete();
 
@@ -46,12 +55,12 @@ class SeriesController extends Controller
         return to_route('series.index')->with('mensagem.sucesso', "Série '{$series->nome}' removida com sucesso");
     }
 
-    public function edit (Serie $series)
+    public function edit (Series $series)
     {
         return view('series.edit')->with('series',$series);
     }
 
-    public function update (Serie $series, SeriesFormRequest $request)
+    public function update (Series $series, SeriesFormRequest $request)
     {
         $series->nome = $request->nome;
         $series->save();
