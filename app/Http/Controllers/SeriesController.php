@@ -12,7 +12,7 @@ class SeriesController extends Controller
 {
     public function index(Request $request)
     {
-        $series = Serie::query()->orderBy('nome')->get();
+        $series = Serie::all();
         // $mensagemSucesso = $request->session()->get('mensagem.sucesso');  --> O código na linha a baixo irá executar a mesma coisa de uma forma mais simples.
         $mensagemSucesso = session('mensagem.sucesso');
 
