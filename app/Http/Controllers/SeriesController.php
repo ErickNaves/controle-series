@@ -6,11 +6,17 @@ use App\Http\Requests\SeriesFormRequest;
 use App\Models\Episode;
 use App\Models\Season;
 use App\Models\Series;
+use App\Repositories\SeriesRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class SeriesController extends Controller
 {
+    public function __construct(private SeriesRepository $repository)
+    {
+        
+    }
+
     public function index(Request $request)
     {
         $series = Series::all();
@@ -27,31 +33,11 @@ class SeriesController extends Controller
 
     public function store(SeriesFormRequest $request)
     {
-        // $nomeSerie = $request->nome;
-        // $series = new Serie();
-        // $series->nome = $nomeSerie;
-        // $series->save();
-        // A linha 31 executa basicamente o mesmo código feito da linha 26 à 29. (Existem algumas diferenças).
-        $series = Series::create($request->all());
-        $seasons = [];
-        for ($i = 1; $i <= $request->seasonsQty; $i++) {
-            $seasons = [
-                'series_id' => $series->id,
-                'number' => $i,
-            ];
-            $season = Season::create($seasons);          
-            $episodes = [];
-            for ($j = 1; $j <= $request->episodesPerSeason; $j++) {
-                $episodes = [
-                    'season_id' => $season->id,
-                    'number' => $j
-                ];
-                Episode::create($episodes);
-            }
-            
-        }
+        $series = $this->repository->add($request);
+
         return to_route("series.index")->with('mensagem.sucesso', "Série '{$series->nome}' adicionada com sucesso");
-    }
+         }
+        
 
     public function destroy (Series $series)
     {
