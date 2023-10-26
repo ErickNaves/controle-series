@@ -9,6 +9,19 @@
     <link rel="stylesheet" href="{{asset ('css/style.css') }}">
 </head>
 <body class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ route('series.index') }}">Home</a>
+
+            @auth
+            <a href="{{ route('logout') }}">Sair</a>
+            @endauth
+
+            @guest
+            <a href="{{ route('login') }}">Entrar</a>
+            @endguest
+        </div>
+    </nav>
     <h1> {{ $title }}</h1>
 
     @isset ($mensagemSucesso)

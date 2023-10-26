@@ -1,4 +1,4 @@
-<x-layout title="Temporadas de {!! $series->nome !!}" :mensagemSucesso="$mensagemSucesso">
+<x-layout title="Temporadas de {!! $series->nome !!}">
 
     <ul class="list-group table-striped">
         @foreach ($seasons as $season)
