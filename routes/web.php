@@ -28,4 +28,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/email', function () {
+    return new \App\Mail\SeriesCreated(
+        'Série de teste',
+        17,
+        5,
+        10,
+    );
+});
+
 require __DIR__.'/auth.php';

@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Middleware\Autenticador;
 use App\Http\Requests\SeriesFormRequest;
+use App\Mail\SeriesCreated;
 use App\Models\Series;
 use App\Repositories\SeriesRepository;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class SeriesController extends Controller
 {
@@ -32,6 +35,20 @@ class SeriesController extends Controller
     public function store(SeriesFormRequest $request)
     {
         $series = $this->repository->add($request);
+
+        
+        // Mail::to($request->user())->send($email);
+        $userList = User::all();
+        foreach ($userList as $user) {
+            $email = new SeriesCreated(
+                $series->nome,
+                $series->id,
+                $request->seasonsQty,
+                $request->episodesPerSeason,
+            );
+            Mail::to($user)->send($email);
+            sleep(2);
+        }
 
         return to_route("series.index")->with('mensagem.sucesso', "Série '{$series->nome}' adicionada com sucesso");
          }
