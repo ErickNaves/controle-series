@@ -34,21 +34,15 @@ class SeriesController extends Controller
 
     public function store(SeriesFormRequest $request)
     {
+        $coverPath = $request->hasFile('cover') ? $request->file('cover')->store('series_cover','public') : null;
+        $request->coverPath = $coverPath;
         $series = $this->repository->add($request);
-
-        
-        // Mail::to($request->user())->send($email);
-        $userList = User::all();
-        foreach ($userList as $user) {
-            $email = new SeriesCreated(
-                $series->nome,
-                $series->id,
-                $request->seasonsQty,
-                $request->episodesPerSeason,
-            );
-            Mail::to($user)->send($email);
-            sleep(2);
-        }
+        \App\Events\SeriesCreated::dispatch(
+            $series->nome,
+            $series->id,
+            $request->seasonsQty,
+            $request->episodesPerSeason,
+        );
 
         return to_route("series.index")->with('mensagem.sucesso', "Série '{$series->nome}' adicionada com sucesso");
          }
@@ -57,7 +51,6 @@ class SeriesController extends Controller
     public function destroy (Series $series)
     {
         $series->delete();
-
         // $request->session()->flash('mensagem.sucesso', "Série '{$series->nome}'
 
         return to_route('series.index')->with('mensagem.sucesso', "Série '{$series->nome}' removida com sucesso");
